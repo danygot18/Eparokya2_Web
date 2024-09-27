@@ -6,37 +6,35 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../Redux/actions/userActions';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-// Example API call to check token validity
 
 const Header = () => {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
   const navigate = useNavigate()
-  // Check user authentication on page load
-
 
   const logoutHandler = () => {
     dispatch(logout());
     navigate("/")
     toast.success('log Out Success', {
       position: toast.POSITION.TOP_RIGHT
-  });
+    });
   }
 
   return (
-    <Container style={styles.header}>
+    
+    <Container style={styles.header} className="mr-3px">
       {/* Logo Section */}
       <div style={styles.logo}>
         <Link to="/" style={styles.link}>
-          MyApp
+          Eparokya
         </Link>
       </div>
 
       {/* User Navigation Section */}
       {user ? (
         <Nav className="ml-4 dropdown d-inline">
-          <NavDropdown title={user.name} className="btn dropdown-toggle text-white mr-4" style={{ height: "55px" }}>
-            <Link to="/profile" className="text-dark dropdown-item" style={{ textDecoration: "none" }}>
+          <NavDropdown title={user.name} className="text-white mr-4" style={{ height: "55px" }}>
+            <Link to="/profile" className="text-dark dropdown-item mr-4" style={{ textDecoration: "none" }}>
               Profile
             </Link>
             {user.role === 'admin' && (
@@ -51,7 +49,7 @@ const Header = () => {
           </NavDropdown>
         </Nav>
       ) : (
-        <div>
+        <div style={styles.authButtons}>
           <Link to="/login">
             <Button variant="outline-light" className="custom-font">
               Login
@@ -75,9 +73,11 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '10px 20px',
-    backgroundColor: '#007BFF',
+    padding: '10px 30px', // Add more padding for wider appearance
+    backgroundColor: '#90EE90', // Light green
     color: '#fff',
+    width: '100%', // Widen to full width
+    boxSizing: 'border-box', // Ensure padding doesn't overflow
   },
   logo: {
     fontSize: '1.5rem',
@@ -86,5 +86,9 @@ const styles = {
     textDecoration: 'none',
     color: '#fff',
     fontSize: '1.5rem',
+  },
+  authButtons: {
+    display: 'flex',
+    gap: '10px', // Adds space between buttons
   },
 };
