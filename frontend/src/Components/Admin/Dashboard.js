@@ -4,21 +4,25 @@ import { Card, Col, Row } from "react-bootstrap";
 import Sidebar from "./SideBar";
 import axios from "axios";
 import MetaData from "../Layout/MetaData";
+import { getToken } from "../../Utils/helpers"
 const Dashboard = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const fetchData = async (endpoint, setData) => {
+
         try {
             const config = {
-                headers: {
-                    Authorization: `Bearer ${getToken()}`,
-                },
+                withCredentials: true
+                // headers: {
+                //     Authorization: `Bearer ${getToken()}`,
+                // },
             };
             const { data } = await axios.get(
                 `${process.env.REACT_APP_API}/api/v1/admin/${endpoint}`,
                 config
             );
+
             setData(data[endpoint]);
             setLoading(false);
         } catch (error) {

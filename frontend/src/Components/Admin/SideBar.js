@@ -1,26 +1,57 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import NavDropdown from "react-bootstrap/NavDropdown";
 import Card from "react-bootstrap/Card";
-import { Dropdown } from "react-bootstrap";
+import Nav from "react-bootstrap/Nav";
 
 const SideBar = () => {
+  return (
+    <Card className="sidebar-card" style={styles.sidebarCard}>
+      <Card.Body>
+        <Card.Title className="text-center" style={styles.title}>Admin Panel</Card.Title>
+        <Nav className="flex-column">
+          <Nav.Item>
+            <Link to="/admin/users" className="sidebar-link" style={styles.sidebarLink}>
+              Users
+            </Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Link to="/admin/settings" className="sidebar-link" style={styles.sidebarLink}>
+              Settings
+            </Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Link to="/admin/reports" className="sidebar-link" style={styles.sidebarLink}>
+              Reports
+            </Link>
+          </Nav.Item>
+        </Nav>
+      </Card.Body>
+    </Card>
+  );
+};
 
-    return (
-        <div className="sidebar" style={{ marginTop: "60px" }}>
-          <nav id="sidebar">
-            <ul className="list-unstyled components"> 
-              <li>
-                <Link to="/admin/users" className="sidebar-link">
-                  Users
-                </Link>
-              </li>
-    
-            </ul>
-          </nav>
-        </div>
-      );
-    };
-
+const styles = {
+  sidebarCard: {
+    marginTop: "60px",
+    width: "250px",
+    height: "100vh",
+    backgroundColor: "#f8f9fa",
+    border: "1px solid #ddd",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"
+  },
+  title: {
+    fontWeight: "bold",
+    marginBottom: "20px",
+    fontSize: "1.2rem"
+  },
+  sidebarLink: {
+    display: "block",
+    padding: "10px 15px",
+    color: "#333",
+    textDecoration: "none",
+    fontWeight: "500",
+    transition: "background-color 0.3s ease",
+  }
+};
 
 export default SideBar;

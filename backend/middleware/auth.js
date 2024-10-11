@@ -10,8 +10,9 @@ exports.isAuthenticatedUser = async (req, res, next) => {
     }
 
     if (req.headers.authorization) {
-        token = req.headers.authorization.split(' ')[1];
+        token = req.headers.authorization.split('')[1];
     }
+    console.log(token)
 
     // const jwtString = token.split(' ')[1]
     //  console.log("token", jwtString)
@@ -24,15 +25,25 @@ exports.isAuthenticatedUser = async (req, res, next) => {
     req.user = await User.findById(decoded.id);
 
     next()
+
 };
 
-exports.authorizeRoles = (...roles) => {
-    return (req, res, next) => {
-        console.log(roles, req.user, req.body);
-        if (!roles.includes(req.user.role)) {
-            return res.status(403).json({ message: `Role (${req.user.role}) is not allowed to acccess this resource` })
+// exports.authorizeRoles = (...roles) => {
+//     return (req, res, next) => {
+//         console.log(roles, req.user, req.body);
+//         if (!roles.includes(req.user.role)) {
+//             return res.status(403).json({ message: `Role (${req.user.role}) is not allowed to acccess this resource` })
 
+//         }
+//         next()
+//     }
+// }
+exports.authorizeAdmin = () => {
+    return (req, res, next) => {
+        console.log(req.user, req.body);
+        if (!req.user.isAdmin) {
+            return res.status(403).json({ message: `Access denied. Admin privileges required.` });
         }
-        next()
-    }
-}
+        next();
+    };
+};

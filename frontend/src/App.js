@@ -12,8 +12,11 @@ import Register from './Components/User/Register'
 import Profile from './Components/User/Profile';
 
 import ProtectedRoute from './Components/Route/protectedRoute';
+
 //Dashboard
 import Dashboard from './Components/Admin/Dashboard';
+//User
+import UsersList from './Components/Admin/User/UserList';
 
 function App() {
   return (
@@ -28,6 +31,7 @@ function App() {
         {/* Admin 
         need mo itago yung dashboard from the user*/}
         <Route path="/dashboard" element={<Dashboard />} /> 
+        <Route path="/admin/users" element={<UsersList />} />
       </Routes>
     </Router>
   );
