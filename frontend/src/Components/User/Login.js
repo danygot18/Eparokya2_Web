@@ -109,7 +109,7 @@ const styles = {
     },
     loginBox: {
         backgroundColor: '#ffffff',
-        padding: '60px 60px',
+        padding: '60px 40px',
         borderRadius: '10px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         width: '400px',

@@ -10,18 +10,17 @@ import { toast } from 'react-toastify';
 const Header = () => {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const logoutHandler = () => {
     dispatch(logout());
-    navigate("/")
-    toast.success('log Out Success', {
+    navigate("/");
+    toast.success('Log Out Success', {
       position: toast.POSITION.TOP_RIGHT
     });
-  }
+  };
 
   return (
-    
     <Container style={styles.header} className="mr-3px">
       {/* Logo Section */}
       <div style={styles.logo}>
@@ -37,7 +36,7 @@ const Header = () => {
             <Link to="/profile" className="text-dark dropdown-item mr-4" style={{ textDecoration: "none" }}>
               Profile
             </Link>
-            {user.role === 'admin' && (
+            {user?.isAdmin && (
               <Link to="/dashboard" className="text-dark dropdown-item" style={{ textDecoration: "none" }}>
                 Dashboard
               </Link>
@@ -73,11 +72,11 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '10px 30px', // Add more padding for wider appearance
-    backgroundColor: '#90EE90', // Light green
+    padding: '10px 30px',
+    backgroundColor: '#26562e',
     color: '#fff',
-    width: '100%', // Widen to full width
-    boxSizing: 'border-box', // Ensure padding doesn't overflow
+    width: '100%',
+    boxSizing: 'border-box',
   },
   logo: {
     fontSize: '1.5rem',
@@ -89,6 +88,6 @@ const styles = {
   },
   authButtons: {
     display: 'flex',
-    gap: '10px', // Adds space between buttons
+    gap: '10px',
   },
 };
