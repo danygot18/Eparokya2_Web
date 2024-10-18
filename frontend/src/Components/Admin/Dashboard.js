@@ -5,6 +5,7 @@ import Sidebar from "./SideBar";
 import axios from "axios";
 import MetaData from "../Layout/MetaData";
 import { getToken } from "../../Utils/helpers"
+import Loader from "../Layout/Loader";
 const Dashboard = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -31,53 +32,71 @@ const Dashboard = () => {
     };
 
     useEffect(() => {
+        setLoading(true);
         fetchData("users", setUsers);
 
     }, []);
     return (
         <Fragment>
-            <Row>
-                <Col md={2}>
-                    <Sidebar />
+      <Row>
+        <Col md={2}>
+          <Sidebar />
+        </Col>
 
-                </Col>
+        <Col md={10}>
+          <Card className="my-4" style={{ width: "100%", minHeight: "100vh" }}>
+            <Card.Body>
+              <h1 className="mb-4">Dashboard</h1>
 
-                <Col md={10}>
-                    <Card className="my-4" style={{ width: "100%", minHeight: "100vh" }}>
-                        <Card.Body>
-                            <Fragment>
-                                <MetaData title={"Admin Dashboard"} />
-                                <Row className="pr-5 mt-5">
-                                    {[
-                                        { label: "Users", data: users, link: "/admin/users" },
-                                    ].map((item, index) => (
-                                        <Col key={index} xl={3} sm={6} mb={3}>
-                                            <Card className={`bg-${index % 4 === 0 ? "success" : index % 4 === 1 ? "danger" : index % 4 === 2 ? "info" : "warning"} text-white o-hidden h-100`}>
-                                                <Card.Body>
-                                                    <div className="text-center card-font-size">
-                                                        {item.label}
-                                                        <br /> <b>{item.data && item.data.length}</b>
-                                                    </div>
-                                                </Card.Body>
-                                                <Link
-                                                    className="card-footer text-white clearfix small z-1"
-                                                    to={item.link}
-                                                >
-                                                    <span className="float-left">View Details</span>
-                                                    <span className="float-right">
-                                                        <i className="fa fa-angle-right"></i>
-                                                    </span>
-                                                </Link>
-                                            </Card>
-                                        </Col>
-                                    ))}
-                                </Row>
-                            </Fragment>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-        </Fragment>
+              {loading ? ( // Show Loader while loading
+                <Loader />
+              ) : (
+                <Fragment>
+                  <MetaData title={"Admin Dashboard"} />
+
+                  <Row className="pr-5 mt-5">
+                    {[
+                      { label: "Users", data: users, link: "/admin/users" },
+                      
+                    ].map((item, index) => (
+                      <Col key={index} xl={3} sm={6} mb={3}>
+                        <Card
+                          className={`bg-${
+                            index % 4 === 0
+                              ? "success"
+                              : index % 4 === 1
+                              ? "danger"
+                              : index % 4 === 2
+                              ? "info"
+                              : "warning"
+                          } text-white o-hidden h-100`}
+                        >
+                          <Card.Body>
+                            <div className="text-center card-font-size">
+                              {item.label}
+                              <br /> <b>{item.data && item.data.length}</b>
+                            </div>
+                          </Card.Body>
+                          <Link
+                            className="card-footer text-white clearfix small z-1"
+                            to={item.link}
+                          >
+                            <span className="float-left">View Details</span>
+                            <span className="float-right">
+                              <i className="fa fa-angle-right"></i>
+                            </span>
+                          </Link>
+                        </Card>
+                      </Col>
+                    ))}
+                  </Row>
+                </Fragment>
+              )}
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Fragment>
     )
 }
 

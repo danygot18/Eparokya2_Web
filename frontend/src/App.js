@@ -17,6 +17,7 @@ import ProtectedRoute from './Components/Route/protectedRoute';
 import Dashboard from './Components/Admin/Dashboard';
 //User
 import UsersList from './Components/Admin/User/UserList';
+import UpdateUser from './Components/Admin/User/UserUpdate';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         need mo itago yung dashboard from the user*/}
         <Route path="/dashboard" element={<Dashboard />} /> 
         <Route path="/admin/users" element={<UsersList />} />
+        <Route path="/admin/user/:id" element={<UpdateUser />} />
       </Routes>
     </Router>
   );
