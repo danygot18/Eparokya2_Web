@@ -1,81 +1,107 @@
-import React, { Fragment, useState, useEffect } from 'react'
-import { useNavigate, useParams } from "react-router-dom";
+import React, { Fragment, useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import MetaData from '../../Layout/MetaData';
 import SideBar from '../SideBar';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { errMsg, successMsg } from '../../../Utils/helpers'
+import { errMsg, successMsg } from '../../../Utils/helpers';
 import { getToken } from '../../../Utils/helpers';
 import axios from 'axios';
 
 const UpdateUser = () => {
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [role, setRole] = useState('')
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState('')
-    const [user, setUser] = useState(true)
-    const [isUpdated, setIsUpdated] = useState(false)
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [isAdmin, setIsAdmin] = useState(false); // Boolean state for isAdmin
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [user, setUser] = useState(null);
+    const [isUpdated, setIsUpdated] = useState(false);
     let navigate = useNavigate();
-
     const { id } = useParams();
+
     const config = {
-        withCredentials: true
-        // headers: {
-        //     'Content-Type': 'application/json', 
-        //     'Authorization': `Bearer ${getToken()}`
-        // }
-    }
+        withCredentials: true,
+    };
+
     const getUserDetails = async (id) => {
-
         try {
-            const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/admin/user/${id}`, config)
-            setUser(data.user)
-            setLoading(false)
-
+            const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/admin/user/${id}`, config);
+            setUser(data.user);
+            setName(data.user.name);
+            setEmail(data.user.email);
+            setIsAdmin(data.user.isAdmin); // Set isAdmin state
+            setLoading(false);
         } catch (error) {
-            setError(error.response.data.message)
+            setError(error.response.data.message);
         }
-    }
+    };
 
+    // const updateUser = async (id, userData) => {
+    //     try {
+    //         const { data } = await axios.put(`${process.env.REACT_APP_API}/api/v1/admin/user/${id}`, userData, config);
+    //         setIsUpdated(data.success);
+    //         setLoading(false);
+    //     } catch (error) {
+    //         setError(error.response.data.message);
+    //     }
+    // };
     const updateUser = async (id, userData) => {
         try {
-            const { data } = await axios.put(`${process.env.REACT_APP_API}/api/v1/admin/user/${id}`, userData, config)
-            setIsUpdated(data.success)
-            setLoading(false)
-
+            const { data } = await axios.put(
+                `${process.env.REACT_APP_API}/api/v1/admin/user/${id}`,
+                userData,
+                config
+            );
+            setIsUpdated(data.success);
+            setLoading(false);
         } catch (error) {
-           setError(error.response.data.message)
+            setError(error.response.data.message);
         }
-    }
+    };
+
 
     useEffect(() => {
-        // console.log(user && user._id !== userId);
-        if (user && user._id !== id) {
-            getUserDetails(id)
-        } else {
-            setName(user.name);
-            setEmail(user.email);
-            setRole(user.role)
+        if (!user || user._id !== id) {
+            getUserDetails(id);
         }
         if (error) {
             errMsg(error);
             setError('');
         }
         if (isUpdated) {
-            successMsg('User updated successfully')
-            navigate('/admin/users')
-
+            successMsg('User updated successfully');
+            navigate('/admin/users');
         }
-    }, [error, isUpdated, id, user])
+    }, [error, isUpdated, id, user]);
+
+    // const submitHandler = (e) => {
+    //     e.preventDefault();
+    //     const formData = new FormData();
+    //     formData.set('name', name);
+    //     formData.set('email', email);
+    //     formData.set('isAdmin', isAdmin); // Set the correct field for isAdmin
+    //     updateUser(user._id, formData);
+    // };
+    // const submitHandler = (e) => {
+    //     e.preventDefault();
+    //     const formData = new FormData();
+    //     formData.set('name', name);
+    //     formData.set('email', email);
+    //     formData.set('isAdmin', isAdmin === true); // Ensure it's a Boolean
+    //     updateUser(user._id, formData);
+    // };
     const submitHandler = (e) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.set('name', name);
-        formData.set('email', email);
-        formData.set('role', role);
-        updateUser(user._id, formData)
-    }
+
+        const userData = {
+            name,
+            email,
+            isAdmin, // This will send the correct boolean value
+        };
+
+        updateUser(user._id, userData);
+    };
+
 
     return (
         <Fragment>
@@ -92,10 +118,9 @@ const UpdateUser = () => {
                                 <div className="form-group">
                                     <label htmlFor="name_field">Name</label>
                                     <input
-                                        type="name"
+                                        type="text"
                                         id="name_field"
                                         className="form-control"
-                                        name='name'
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
                                     />
@@ -106,7 +131,6 @@ const UpdateUser = () => {
                                         type="email"
                                         id="email_field"
                                         className="form-control"
-                                        name='email'
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
@@ -116,22 +140,24 @@ const UpdateUser = () => {
                                     <select
                                         id="role_field"
                                         className="form-control"
-                                        name='role'
-                                        value={role}
-                                        onChange={(e) => setRole(e.target.value)}
+                                        value={isAdmin ? 'admin' : 'user'}
+                                        onChange={(e) => setIsAdmin(e.target.value === 'admin')} // Correct logic
                                     >
-                                        <option value="user">user</option>
-                                        <option value="admin">admin</option>
+                                        <option value="user">User</option>
+                                        <option value="admin">Admin</option>
                                     </select>
+
                                 </div>
-                                <button type="submit" className="btn update-btn btn-block mt-4 mb-3" >Update</button>
+                                <button type="submit" className="btn update-btn btn-block mt-4 mb-3">
+                                    Update
+                                </button>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
         </Fragment>
-    )
-}
+    );
+};
 
-export default UpdateUser
+export default UpdateUser;

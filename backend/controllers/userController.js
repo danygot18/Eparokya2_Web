@@ -229,36 +229,122 @@ exports.getUserDetails = async (req, res, next) => {
     })
 }
 
+// exports.deleteUser = async (req, res, next) => {
+//     const user = await User.findById(req.params.id);
+
+//     if (!user) {
+//         return res.status(401).json({ message: `User does not found with id: ${req.params.id}` })
+//         // return next(new ErrorHandler(`User does not found with id: ${req.params.id}`))
+//     }
+
+//     // Remove avatar from cloudinary
+//     const image_id = user.avatar.public_id;
+//     await cloudinary.v2.uploader.destroy(image_id);
+//     await User.findByIdAndRemove(req.params.id);
+//     return res.status(200).json({
+//         success: true,
+//     })
+// }
 exports.deleteUser = async (req, res, next) => {
-    const user = await User.findById(req.params.id);
+    try {
+        const user = await User.findById(req.params.id);
 
-    if (!user) {
-        return res.status(401).json({ message: `User does not found with id: ${req.params.id}` })
-        // return next(new ErrorHandler(`User does not found with id: ${req.params.id}`))
+        if (!user) {
+            return res.status(404).json({
+                message: `User not found with id: ${req.params.id}`,
+            });
+        }
+
+        // Remove avatar from Cloudinary
+        const image_id = user.avatar.public_id;
+        await cloudinary.v2.uploader.destroy(image_id);
+
+        // Delete the user
+        await User.findByIdAndDelete(req.params.id);
+
+        return res.status(200).json({
+            success: true,
+            message: 'User deleted successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Server error',
+            error: error.message,
+        });
     }
+};
 
-    // Remove avatar from cloudinary
-    const image_id = user.avatar.public_id;
-    await cloudinary.v2.uploader.destroy(image_id);
-    await User.findByIdAndRemove(req.params.id);
-    return res.status(200).json({
-        success: true,
-    })
-}
+// exports.updateUser = async (req, res, next) => {
+//     const newUserData = {
+//         name: req.body.name,
+//         email: req.body.email,
+//         role: req.body.role
+//     }
+
+//     const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
+//         new: true,
+//         runValidators: true,
+//         // useFindAndModify: false
+//     })
+
+//     return res.status(200).json({
+//         success: true
+//     })
+// }
+
 exports.updateUser = async (req, res, next) => {
     const newUserData = {
         name: req.body.name,
         email: req.body.email,
-        role: req.body.role
+        isAdmin: req.body.isAdmin, // Ensure boolean value
+    };
+
+    try {
+        const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
+            new: true,
+            runValidators: true,
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found',
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: user,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Server error',
+            error: error.message,
+        });
     }
+};
+// exports.updateUser = async (req, res) => {
+//     try {
+//         const { isAdmin } = req.body;
 
-    const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
-        new: true,
-        runValidators: true,
-        // useFindAndModify: false
-    })
+//         // Ensure isAdmin is a Boolean
+//         const adminStatus = isAdmin === 'true' || isAdmin === true;
 
-    return res.status(200).json({
-        success: true
-    })
-}
+//         const user = await User.findByIdAndUpdate(req.params.id, { 
+//             name: req.body.name, 
+//             email: req.body.email, 
+//             isAdmin: adminStatus 
+//         }, { new: true, runValidators: true });
+
+//         if (!user) {
+//             return res.status(404).json({ success: false, message: 'User not found' });
+//         }
+
+//         res.status(200).json({ success: true, user });
+//     } catch (error) {
+//         res.status(500).json({ success: false, message: 'Server error', error: error.message });
+//     }
+// };
+
