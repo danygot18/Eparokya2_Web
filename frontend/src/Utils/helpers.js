@@ -20,13 +20,30 @@ export const getToken = () => {
 };
 
 // access user name from session storage
+// export const getUser = () => {
+//     if (window !== 'undefined') {
+//         if (sessionStorage.getItem('user')) {
+//             return JSON.parse(sessionStorage.getItem('user'));
+//         } else {
+//             return false;
+//         }
+//     }
+// };
 export const getUser = () => {
-    if (window !== 'undefined') {
-        if (sessionStorage.getItem('user')) {
-            return JSON.parse(sessionStorage.getItem('user'));
-        } else {
-            return false;
+    if (typeof window !== 'undefined') {
+        // Check for the 'persist:root' key in localStorage
+        const rootData = localStorage.getItem('persist:root');
+        if (rootData) {
+            // Parse 'persist:root' to get the user data within the 'auth' property
+            const parsedData = JSON.parse(rootData);
+            if (parsedData.auth) {
+                const authData = JSON.parse(parsedData.auth);
+                if (authData.user) {
+                    return authData.user; // Return the user object if found
+                }
+            }
         }
+        return false; // Return false if user data is not found
     }
 };
 

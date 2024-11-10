@@ -26,6 +26,7 @@ const UsersList = () => {
   };
 
   const listUsers = async () => {
+ 
     try {
       const { data } = await axios.get(
         `${process.env.REACT_APP_API}/api/v1/admin/users`,

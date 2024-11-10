@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import { Button, Nav, NavDropdown } from 'react-bootstrap';
@@ -21,46 +21,47 @@ const Header = () => {
   };
 
   return (
-    <Container style={styles.header} className="mr-3px">
+    <Container fluid style={styles.header}>
       {/* Logo Section */}
-      <div style={styles.logo}>
-        <Link to="/" style={styles.link}>
-          Eparokya
-        </Link>
-      </div>
+      <Link to="/" style={styles.logo}>
+        Eparokya
+      </Link>
+
+      {/* Navigation Links */}
+      
 
       {/* User Navigation Section */}
-      {user ? (
-        <Nav className="ml-4 dropdown d-inline">
-          <NavDropdown title={user.name} className="text-white mr-4" style={{ height: "55px" }}>
-            <Link to="/profile" className="text-dark dropdown-item mr-4" style={{ textDecoration: "none" }}>
+      <Nav className="d-flex align-items-center">
+        {user ? (
+          <NavDropdown 
+            title={<span style={styles.navDropdownTitle}>{user.name}</span>} 
+            id="user-nav-dropdown" 
+            alignRight // Aligns the dropdown to the right
+            menuVariant="light"
+          >
+            <NavDropdown.Item as={Link} to="/profile" style={styles.dropdownItem}>
               Profile
-            </Link>
+            </NavDropdown.Item>
             {user?.isAdmin && (
-              <Link to="/dashboard" className="text-dark dropdown-item" style={{ textDecoration: "none" }}>
+              <NavDropdown.Item as={Link} to="/dashboard" style={styles.dropdownItem}>
                 Dashboard
-              </Link>
+              </NavDropdown.Item>
             )}
-
-            <NavDropdown.Item className="dropdown-item text-danger" onClick={logoutHandler}>
+            <NavDropdown.Item onClick={logoutHandler} style={styles.logout}>
               Logout
             </NavDropdown.Item>
           </NavDropdown>
-        </Nav>
-      ) : (
-        <div style={styles.authButtons}>
-          <Link to="/login">
-            <Button variant="outline-light" className="custom-font">
-              Login
-            </Button>
-          </Link>
-          <Link to="/register">
-            <Button variant="outline-light" className="custom-font ml-2">
-              Sign Up
-            </Button>
-          </Link>
-        </div>
-      )}
+        ) : (
+          <div style={styles.authButtons}>
+            <Link to="/login">
+              <Button variant="light" style={styles.button}>Login</Button>
+            </Link>
+            <Link to="/register">
+              <Button variant="light" style={{ ...styles.button, marginLeft: '10px' }}>Sign Up</Button>
+            </Link>
+          </div>
+        )}
+      </Nav>
     </Container>
   );
 };
@@ -72,22 +73,52 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '10px 30px',
-    backgroundColor: '#26562e',
-    color: '#fff',
+    padding: '15px 30px',
+    backgroundColor: '#1e3a3a',
+    color: '#f0f8ff',
     width: '100%',
-    boxSizing: 'border-box',
+    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
   },
   logo: {
-    fontSize: '1.5rem',
-  },
-  link: {
+    fontSize: '1.8rem',
+    fontWeight: 'bold',
+    color: '#f0f8ff',
     textDecoration: 'none',
-    color: '#fff',
-    fontSize: '1.5rem',
+  },
+  navLinks: {
+    display: 'flex',
+    gap: '20px',
+    justifyContent: 'center', // Center navigation links
+    marginLeft: 'auto', // Push links to the center
+  },
+  navLink: {
+    color: '#f0f8ff',
+    textDecoration: 'none',
+    fontSize: '1.1rem',
+    padding: '8px 15px',
+    fontWeight: '500',
+  },
+  navDropdownTitle: {
+    color: '#f0f8ff',
+    fontSize: '1.1rem',
+  },
+  dropdownItem: {
+    color: '#333',
+    padding: '8px 15px',
+  },
+  logout: {
+    color: '#d9534f',
+    fontWeight: 'bold',
   },
   authButtons: {
     display: 'flex',
-    gap: '10px',
+    alignItems: 'center',
+    gap: '10px', 
+  },
+  button: {
+    fontSize: '1rem',
+    padding: '8px 20px',
+    borderRadius: '5px',
+    fontWeight: 'bold',
   },
 };

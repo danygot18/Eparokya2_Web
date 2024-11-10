@@ -15,13 +15,18 @@ const SideBar = () => {
             </Link>
           </Nav.Item>
           <Nav.Item>
-            <Link to="/admin/settings" className="sidebar-link" style={styles.sidebarLink}>
-              Settings
+            <Link to="/admin/calendar" className="sidebar-link" style={styles.sidebarLink}>
+              Calendar
             </Link>
           </Nav.Item>
           <Nav.Item>
-            <Link to="/admin/reports" className="sidebar-link" style={styles.sidebarLink}>
-              Reports
+            <Link to="/admin/postlist" className="sidebar-link" style={styles.sidebarLink}>
+              Post List
+            </Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Link to="/admin/eventpostlist" className="sidebar-link" style={styles.sidebarLink}>
+              Event Post List
             </Link>
           </Nav.Item>
         </Nav>

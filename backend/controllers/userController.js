@@ -251,15 +251,26 @@ exports.deleteUser = async (req, res, next) => {
 
         if (!user) {
             return res.status(404).json({
+                success: false,
                 message: `User not found with id: ${req.params.id}`,
             });
         }
 
-        // Remove avatar from Cloudinary
-        const image_id = user.avatar.public_id;
-        await cloudinary.v2.uploader.destroy(image_id);
+        // Check if the user has an avatar with a public_id before attempting to delete
+        if (user.avatar && user.avatar.public_id) {
+            try {
+                await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+            } catch (cloudinaryError) {
+                console.error("Error deleting avatar from Cloudinary:", cloudinaryError);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error deleting avatar from Cloudinary',
+                    error: cloudinaryError.message,
+                });
+            }
+        }
 
-        // Delete the user
+        // Delete the user from the database
         await User.findByIdAndDelete(req.params.id);
 
         return res.status(200).json({
@@ -267,6 +278,7 @@ exports.deleteUser = async (req, res, next) => {
             message: 'User deleted successfully',
         });
     } catch (error) {
+        console.error("Server error:", error);
         return res.status(500).json({
             success: false,
             message: 'Server error',
@@ -274,6 +286,7 @@ exports.deleteUser = async (req, res, next) => {
         });
     }
 };
+
 
 // exports.updateUser = async (req, res, next) => {
 //     const newUserData = {

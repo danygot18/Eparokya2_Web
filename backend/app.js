@@ -3,6 +3,9 @@ const app = express();
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const user = require('./routes/user')
+const wedding = require('./routes/wedding')
+const post = require('./routes/post')
+const evenpost = require('./routes/EventPost')
 
 app.use(cors({
     origin: "http://localhost:3000",
@@ -15,6 +18,9 @@ app.use(cookieParser());
 //     res.send('GUMANA NAA')
 // })
 app.use('/api/v1', user);
+app.use('/api/v1', wedding);
+app.use('/api/v1', post);
+app.use('/api/v1', evenpost);
 
 
 

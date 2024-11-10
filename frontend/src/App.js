@@ -19,6 +19,24 @@ import Dashboard from './Components/Admin/Dashboard';
 import UsersList from './Components/Admin/User/UserList';
 import UpdateUser from './Components/Admin/User/UserUpdate';
 
+//Calendar
+import Calendar from './Components/Admin/Calendar/Calendar';
+
+//Post
+import CreatePost from './Components/Admin/Post/Post';
+import PostLists from './Components/Admin/Post/PostLists';
+import PostUpdate from './Components/Admin/Post/PostUpdate';
+
+import EventPost from './Components/Admin/EventPost/EventPostCreate';
+import EventPostLists from './Components/Admin/EventPost/EventPostList';
+import EventPostUpdate from './Components/Admin/EventPost/UpdateEventPost';
+
+
+//Guest View
+import { Prayers } from './Components/Guest/Prayers';
+import { Events } from './Components/Guest/Events';
+import { Sermons } from './Components/Guest/Sermons';
+
 function App() {
   return (
     <Router>
@@ -31,9 +49,30 @@ function App() {
 
         {/* Admin 
         need mo itago yung dashboard from the user*/}
-        <Route path="/dashboard" element={<Dashboard />} /> 
-        <Route path="/admin/users" element={<UsersList />} />
-        <Route path="/admin/user/:id" element={<UpdateUser />} />
+        <Route path="/dashboard" element={<ProtectedRoute isAdmin={true}> <Dashboard /></ProtectedRoute>} />
+        <Route path="/admin/users" element={<ProtectedRoute isAdmin={true}><UsersList /></ProtectedRoute>} />
+        <Route path="/admin/user/:id" element={<ProtectedRoute isAdmin={true}><UpdateUser /></ProtectedRoute>} />
+
+        {/* calendar */}
+        <Route path="/admin/calendar" element={<ProtectedRoute isAdmin={true}><Calendar /></ProtectedRoute>} />
+
+        {/* Post */}
+        <Route path="/admin/post/create" element={<ProtectedRoute isAdmin={true}><CreatePost /></ProtectedRoute>} />
+        <Route path="/admin/postlist" element={<ProtectedRoute isAdmin={true}><PostLists /></ProtectedRoute>} />
+        <Route path="/admin/post/:id" element={<ProtectedRoute isAdmin={true}><PostUpdate /></ProtectedRoute>} />
+        {/* Event Post */}
+        <Route path="/admin/eventpost/create" element={<ProtectedRoute isAdmin={true}><EventPost /></ProtectedRoute>} />
+        <Route path="/admin/eventpostlist" element={<ProtectedRoute isAdmin={true}><EventPostLists /></ProtectedRoute>} />
+        <Route path="/admin/editevent/:id" element={<ProtectedRoute isAdmin={true}><EventPostUpdate /></ProtectedRoute>} />
+
+
+
+
+        {/* Guest View */}
+        <Route path="/prayers" element={<Prayers />} exact="true" />
+        <Route path="/sermons" element={<Sermons />} exact="true" />
+        <Route path="/Events" element={<Events />} exact="true" />
+
       </Routes>
     </Router>
   );

@@ -3,17 +3,20 @@ import { Navigate } from 'react-router-dom';
 
 import Loader from '../Layout/Loader';
 import { getUser } from '../../Utils/helpers';
+import { toast, ToastContainer } from 'react-toastify';
+
 
 const ProtectedRoute = ({ children, isAdmin = false }) => {
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
     const [user, setUser] = useState(null);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+    const notify = (error) => toast.error(error, {
+        position: toast.POSITION.BOTTOM_RIGHT
+    });
+    
+    console.log(getUser())
     useEffect(() => {
-        const currentUser = getUser();
-        setUser(currentUser);
-        setIsAuthenticated(!!currentUser);
+        const fetchedUser = getUser();
+        setUser(fetchedUser);
         setLoading(false);
     }, []);
 
@@ -26,6 +29,14 @@ const ProtectedRoute = ({ children, isAdmin = false }) => {
     }
 
     if (isAdmin && !user.isAdmin) {
+        toast.error('You are not allowed to access the admin dashboard.', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+        });
         return <Navigate to='/' />;
     }
 

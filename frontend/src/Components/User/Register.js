@@ -11,10 +11,16 @@ const Register = () => {
         name: '',
         email: '',
         password: '',
+        age: '',
+        preference: '',
+        phone: '',
+        barangay: '',
+        zip: '',
+        city: '',
+        country: '',
     });
 
-    const { name, email, password } = user;
-
+    const { name, email, password, age, preference, phone, barangay, zip, city, country } = user;
     const [avatar, setAvatar] = useState('');
     const [avatarPreview, setAvatarPreview] = useState('/images/default_avatar.jpg');
 
@@ -36,6 +42,13 @@ const Register = () => {
         formData.set('name', name);
         formData.set('email', email);
         formData.set('password', password);
+        formData.set('age', age);
+        formData.set('preference', preference);
+        formData.set('phone', phone);
+        formData.set('barangay', barangay);
+        formData.set('zip', zip);
+        formData.set('city', city);
+        formData.set('country', country);
         formData.set('avatar', avatar);
 
         dispatch(register(formData));
@@ -59,12 +72,12 @@ const Register = () => {
     return (
         <Fragment>
             <Metadata title={'Register User'} />
-
             <div className="row wrapper justify-content-center align-items-center vh-100">
                 <div className="col-10 col-lg-6 col-md-8">
                     <form className="shadow-lg p-4" onSubmit={submitHandler} encType='multipart/form-data'>
                         <h1 className="mb-4 text-center">Register</h1>
 
+                        {/* Name */}
                         <div className="form-group mb-3">
                             <label htmlFor="name_field">Name</label>
                             <input
@@ -78,6 +91,7 @@ const Register = () => {
                             />
                         </div>
 
+                        {/* Email */}
                         <div className="form-group mb-3">
                             <label htmlFor="email_field">Email</label>
                             <input
@@ -91,6 +105,7 @@ const Register = () => {
                             />
                         </div>
 
+                        {/* Password */}
                         <div className="form-group mb-3">
                             <label htmlFor="password_field">Password</label>
                             <input
@@ -104,6 +119,102 @@ const Register = () => {
                             />
                         </div>
 
+                        {/* Age */}
+                        <div className="form-group mb-3">
+                            <label htmlFor="age_field">Age</label>
+                            <input
+                                type="number"
+                                id="age_field"
+                                className="form-control"
+                                name='age'
+                                value={age}
+                                onChange={onChange}
+                            />
+                        </div>
+
+                        {/* Preference */}
+                        <div className="form-group mb-3">
+                            <label htmlFor="preference_field">Preference</label>
+                            <select
+                                id="preference_field"
+                                className="form-control"
+                                name='preference'
+                                value={preference}
+                                onChange={onChange}
+                            >
+                                <option value="">Select Preference</option>
+                                <option value="He">He</option>
+                                <option value="She">She</option>
+                                <option value="They/Them">They/Them</option>
+                            </select>
+                        </div>
+
+                        {/* Phone */}
+                        <div className="form-group mb-3">
+                            <label htmlFor="phone_field">Phone</label>
+                            <input
+                                type="text"
+                                id="phone_field"
+                                className="form-control"
+                                name='phone'
+                                value={phone}
+                                onChange={onChange}
+                            />
+                        </div>
+
+                        {/* Barangay */}
+                        <div className="form-group mb-3">
+                            <label htmlFor="barangay_field">Barangay</label>
+                            <input
+                                type="text"
+                                id="barangay_field"
+                                className="form-control"
+                                name='barangay'
+                                value={barangay}
+                                onChange={onChange}
+                            />
+                        </div>
+
+                        {/* Zip */}
+                        <div className="form-group mb-3">
+                            <label htmlFor="zip_field">ZIP</label>
+                            <input
+                                type="text"
+                                id="zip_field"
+                                className="form-control"
+                                name='zip'
+                                value={zip}
+                                onChange={onChange}
+                            />
+                        </div>
+
+                        {/* City */}
+                        <div className="form-group mb-3">
+                            <label htmlFor="city_field">City</label>
+                            <input
+                                type="text"
+                                id="city_field"
+                                className="form-control"
+                                name='city'
+                                value={city}
+                                onChange={onChange}
+                            />
+                        </div>
+
+                        {/* Country */}
+                        <div className="form-group mb-3">
+                            <label htmlFor="country_field">Country</label>
+                            <input
+                                type="text"
+                                id="country_field"
+                                className="form-control"
+                                name='country'
+                                value={country}
+                                onChange={onChange}
+                            />
+                        </div>
+
+                        {/* Avatar */}
                         <div className='form-group mb-4'>
                             <label htmlFor='avatar_upload'>Avatar</label>
                             <div className='d-flex align-items-center mt-2'>

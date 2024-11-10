@@ -6,98 +6,98 @@ import axios from "axios";
 import MetaData from "../Layout/MetaData";
 import { getToken } from "../../Utils/helpers"
 import Loader from "../Layout/Loader";
+import SideBar from "./SideBar";
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+const localizer = momentLocalizer(moment);
+
 const Dashboard = () => {
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const [events, setEvents] = useState([]);
+  const [selectedWedding, setSelectedWedding] = useState(null); // State to store selected wedding details
+  const config = {
+    withCredentials: true,
+    // headers: {
+    //   'Content-Type': 'application/json',
+    //   Authorization: `Bearer ${getToken()}`,
+    // },
+  };
 
-    const fetchData = async (endpoint, setData) => {
-
-        try {
-            const config = {
-                withCredentials: true
-                // headers: {
-                //     Authorization: `Bearer ${getToken()}`,
-                // },
-            };
-            const { data } = await axios.get(
-                `${process.env.REACT_APP_API}/api/v1/admin/${endpoint}`,
-                config
-            );
-
-            setData(data[endpoint]);
-            setLoading(false);
-        } catch (error) {
-            console.error(error);
-        }
+  useEffect(() => {
+    const fetchWeddings = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getAllWeddings`, config);
+        const weddingEvents = response.data.map(wedding => ({
+          id: wedding._id, // Store the wedding ID
+          title: `${wedding.name1} & ${wedding.name2} Wedding`,
+          start: new Date(wedding.weddingDate),
+          end: new Date(wedding.weddingDate),
+        }));
+        setEvents(weddingEvents);
+      } catch (error) {
+        console.error('Error fetching wedding events:', error);
+      }
     };
 
-    useEffect(() => {
-        setLoading(true);
-        fetchData("users", setUsers);
+    fetchWeddings();
+  }, []);
 
-    }, []);
-    return (
-        <Fragment>
-      <Row>
-        <Col md={2}>
-          <Sidebar />
-        </Col>
+  // Fetch wedding details by ID when an event is clicked
+  const fetchWeddingDetails = async (weddingId) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/getWedding/${weddingId}`, config);
+      setSelectedWedding(response.data);
+    } catch (error) {
+      console.error('Error fetching wedding details:', error);
+    }
+  };
 
-        <Col md={10}>
-          <Card className="my-4" style={{ width: "100%", minHeight: "100vh" }}>
-            <Card.Body>
-              <h1 className="mb-4">Dashboard</h1>
+  // Handle event click to show wedding details
+  const handleEventClick = (event) => {
+    fetchWeddingDetails(event.id);
+  };
 
-              {loading ? ( // Show Loader while loading
-                <Loader />
-              ) : (
-                <Fragment>
-                  <MetaData title={"Admin Dashboard"} />
+  // Customize event colors or styles dynamically
+  const eventPropGetter = (event) => {
+    const backgroundColor = 'blue';
+    return { style: { backgroundColor, color: 'white' } };
+  };
 
-                  <Row className="pr-5 mt-5">
-                    {[
-                      { label: "Users", data: users, link: "/admin/users" },
-                      
-                    ].map((item, index) => (
-                      <Col key={index} xl={3} sm={6} mb={3}>
-                        <Card
-                          className={`bg-${
-                            index % 4 === 0
-                              ? "success"
-                              : index % 4 === 1
-                              ? "danger"
-                              : index % 4 === 2
-                              ? "info"
-                              : "warning"
-                          } text-white o-hidden h-100`}
-                        >
-                          <Card.Body>
-                            <div className="text-center card-font-size">
-                              {item.label}
-                              <br /> <b>{item.data && item.data.length}</b>
-                            </div>
-                          </Card.Body>
-                          <Link
-                            className="card-footer text-white clearfix small z-1"
-                            to={item.link}
-                          >
-                            <span className="float-left">View Details</span>
-                            <span className="float-right">
-                              <i className="fa fa-angle-right"></i>
-                            </span>
-                          </Link>
-                        </Card>
-                      </Col>
-                    ))}
-                  </Row>
-                </Fragment>
-              )}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Fragment>
-    )
-}
+  return (
+    <div style={{ display: 'flex' }}>
+      {/* Sidebar */}
+      <SideBar />
+
+      {/* Calendar Content */}
+      <div style={{ flex: 1, padding: '20px' }}>
+        <MetaData title={'Calendar'} />
+        <h1>Calendar Events</h1>
+        <div style={{ height: '700px', marginTop: '20px' }}>
+          <Calendar
+            localizer={localizer}
+            events={events}
+            startAccessor="start"
+            endAccessor="end"
+            defaultView="month"
+            views={['month', 'week', 'day', 'agenda']}
+            eventPropGetter={eventPropGetter}
+            onSelectEvent={handleEventClick} // Event click handler
+            style={{ height: '100%' }}
+          />
+        </div>
+
+        {/* Display selected wedding details */}
+        {selectedWedding && (
+          <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #ccc' }}>
+            <h2>Wedding Details</h2>
+            <p><strong>Name 1:</strong> {selectedWedding.name1}</p>
+            <p><strong>Name 2:</strong> {selectedWedding.name2}</p>
+            <p><strong>Date:</strong> {new Date(selectedWedding.weddingDate).toLocaleDateString()}</p>
+            {/* Add any other details you'd like to display */}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export default Dashboard

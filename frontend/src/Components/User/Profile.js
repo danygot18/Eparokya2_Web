@@ -11,7 +11,7 @@ const Profile = () => {
     <Fragment>
       {loading ? <Loader /> : (
         <Fragment>
-          <MetaData title={'Your Profile'} />
+          <MetaData title={'Profile'} />
 
           <div style={styles.profileContainer} className="profile-container mt-5">
             <h2 className="mb-4">My Profile</h2>
